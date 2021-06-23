@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, pick } from 'lodash';
 import React, {
   useCallback,
   useEffect,
@@ -153,7 +153,6 @@ const GasSpeedButton = ({
   const {
     gasPrices,
     gasSpeedOption,
-    isSufficientGas,
     selectedGasPrice,
     txFees,
     updateCustomValues,
@@ -165,11 +164,7 @@ const GasSpeedButton = ({
       return gasPrices;
     }
 
-    const filteredGasPrices = {};
-    options.forEach(speed => {
-      filteredGasPrices[speed] = gasPrices?.[speed];
-    });
-    return filteredGasPrices;
+    return pick(gasPrices, options);
   }, [gasPrices, minGasPrice, options]);
 
   const gasPrice = selectedGasPrice?.txFee?.native?.value?.amount;
@@ -249,14 +244,12 @@ const GasSpeedButton = ({
         size="lmedium"
         weight="bold"
       >
-        {!gasPricesAvailable ||
-        isEmpty(txFees) ||
-        typeof isSufficientGas === 'undefined'
+        {isEmpty(gasPricesAvailable) || isEmpty(txFees)
           ? 'Loading...'
           : animatedNumber}
       </Text>
     ),
-    [colors, gasPricesAvailable, isSufficientGas, theme, txFees]
+    [colors, gasPricesAvailable, theme, txFees]
   );
 
   const handlePress = useCallback(() => {
