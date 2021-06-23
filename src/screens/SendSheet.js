@@ -293,12 +293,18 @@ export default function SendSheet(props) {
     [sendUpdateAssetAmount]
   );
 
+  const hasGasPrices = !!gasPrices;
+
   const onSubmit = useCallback(async () => {
     const validTransaction =
-      isValidAddress && amountDetails.isSufficientBalance && isSufficientGas;
+      isValidAddress &&
+      amountDetails.isSufficientBalance &&
+      hasGasPrices &&
+      isSufficientGas;
     if (!selectedGasPrice.txFee || !validTransaction || isAuthorizing) {
       logger.sentry('preventing tx submit for one of the following reasons:');
       logger.sentry('selectedGasPrice.txFee ? ', selectedGasPrice?.txFee);
+      logger.sentry('has gasPrices ? ', hasGasPrices);
       logger.sentry('validTransaction ? ', validTransaction);
       logger.sentry('isAuthorizing ? ', isAuthorizing);
       captureEvent('Preventing tx submit');
@@ -366,6 +372,7 @@ export default function SendSheet(props) {
     dataAddNewTransaction,
     dispatch,
     gasLimit,
+    hasGasPrices,
     isAuthorizing,
     isSufficientGas,
     isValidAddress,
@@ -539,6 +546,7 @@ export default function SendSheet(props) {
               <SendButton
                 {...props}
                 assetAmount={amountDetails.assetAmount}
+                hasGasPrices={hasGasPrices}
                 isAuthorizing={isAuthorizing}
                 isSufficientBalance={amountDetails.isSufficientBalance}
                 isSufficientGas={isSufficientGas}
