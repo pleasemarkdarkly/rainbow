@@ -215,7 +215,7 @@ class TransactionListView: UIView, UITableViewDelegate, UITableViewDataSource {
   @objc func onPressOutAddCash(_ sender: UIButton) {
     header.addCash.animateTapEnd(useHaptic: "selection")
   }
-
+  
   var sections: [TransactionSectionProtocol] = [TransactionSectionProtocol]()
 
   let tableView = TransitionListTableView()
@@ -243,6 +243,18 @@ class TransactionListView: UIView, UITableViewDelegate, UITableViewDataSource {
     // Enable avatars
     header.avatarView.isHidden = true
     header.accountView.isHidden = false
+    
+    if #available(iOS 14.0, *) {
+      let contextMenu = UIMenu(title: "More", options: .displayInline, children: [
+          UIAction(title: "Item 1", image: UIImage(systemName: "mic"), handler: { _ in print("Hello")}),
+          UIAction(title: "Item 2", image: UIImage(systemName: "envelope"), handler: { _ in print("Hello from 2")}),
+          UIAction(title: "Item 3", image: UIImage(systemName: "flame.fill"), handler: { _ in print("Hello from 3")}),
+          UIAction(title: "Item 4", image: UIImage(systemName: "video"), state: .on, handler: { _ in print("Hello from 4")})
+      ])
+      header.accountView.menu = contextMenu
+      header.accountView.showsMenuAsPrimaryAction = true
+      header.accountView.addAction(UIAction(title: ""){ _ in print("Menu action is being fired: ")},for: .menuActionTriggered)
+    }
 
     header.addSubview(headerSeparator)
     if(isAvatarPickerAvailable){
